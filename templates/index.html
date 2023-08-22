@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Recommender</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Global settings */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 2.5em;
+        }
+
+        /* Form styling */
+        #recommender-form {
+            width: 20%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.2em; /* Increase font-size here */
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em; /* Font size for the options */
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 20px; /* Increased font size */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Results styling */
+        #results {
+            width: 80%;
+            margin: 50px auto;
+            text-align: center;
+        }
+</style>
+
+</head>
+<body>
+    <h1>ZOMATO - Find the Best Restaurants</h1>
+
+    <form id="recommender-form">
+        <label for="city">City:</label>
+        <select id="city" name="city">
+            {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="place">Place:</label>
+        <select id="place" name="place">
+        </select>
+
+        <label for="item">Item:</label>
+        <select id="item" name="item">
+        </select>
+
+        <input type="submit" value="Get Recommendations">
+    </form>
+
+    <div id="results">
+        <!-- Results will be displayed here -->
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Populate places dropdown based on selected city
+            $('#city').change(function() {
+                const city = $(this).val();
+                $.get('/get_places', { city: city }, function(data) {
+                    const places = data.places;
+                    $('#place').empty();
+                    places.forEach(function(place) {
+                        $('#place').append(`<option value="${place}">${place}</option>`);
+                    });
+                });
+            });
+
+            // Populate items dropdown based on selected place
+            $('#place').change(function() {
+                const place = $(this).val();
+                $.get('/get_items', { place: place }, function(data) {
+                    const items = data.items;
+                    $('#item').empty();
+                    items.forEach(function(item) {
+                        $('#item').append(`<option value="${item}">${item}</option>`);
+                    });
+                });
+            });
+
+            // Fetch recommendations on form submit
+            $('#recommender-form').submit(function(e) {
+                e.preventDefault();
+                const formData = $(this).serialize();
+                $.post('/get_recommendations', formData, function(data) {
+                    $('#results').html(data);
+                });
+            });
+
+            // Trigger change to populate initial options
+            $('#city').change();
+        });
+    </script>
+</body>
+</html>

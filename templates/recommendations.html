@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recommended Restaurants</title>
+    <style>
+        /* Global settings */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 2em;
+        }
+
+        /* List styling */
+        ul {
+            width: 80%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        li {
+            margin: 15px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* Text for 'no recommendations' */
+        p {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Top 5 Recommended Restaurants</h2>
+
+    {% if recommendations %}
+        <ul>
+            {% for restaurant in recommendations %}
+                <li>
+                    Restaurant: {{ restaurant['Restaurant Name'] }},
+                    Average Dining Rating: {{ restaurant['Dining Rating'] }},
+                    Average Delivery Rating: {{ restaurant['Delivery Rating'] }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No recommendations available.</p>
+    {% endif %}
+</body>
+</html>
